@@ -3,8 +3,8 @@ const moragan = require("morgan");
 const dotenv = require("dotenv");
 const createError = require("http-errors");
 const connectDB = require("./config/db");
-const path = require('path')
-const cors = require('cors')
+const path = require("path");
+const cors = require("cors");
 //dotenv conig
 dotenv.config();
 
@@ -17,11 +17,10 @@ const app = express();
 //middlewares
 app.use(express.json());
 app.use(moragan("dev"));
-app.use(cors())
+app.use(cors());
 
 //routes
 app.use("/api/user", require("./routes/userRoutes"));
-
 
 //static files
 app.use(express.static(path.join(__dirname, "./client/build")));
@@ -59,8 +58,6 @@ app.use((err, req, res, next) => {
     },
   });
 });
-
-
 
 //port
 const port = process.env.PORT || 8080;

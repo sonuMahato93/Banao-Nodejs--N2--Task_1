@@ -7,7 +7,9 @@ const jwt = require("jsonwebtoken");
 //register callback
 const registerController = async (req, res) => {
   try {
-    const exisitingUser = await userModel.findOne({ username: req.body.username });
+    const exisitingUser = await userModel.findOne({
+      username: req.body.username,
+    });
     if (exisitingUser) {
       return res
         .status(200)
@@ -44,13 +46,42 @@ const loginController = async (req, res) => {
         .status(200)
         .send({ message: "Invalid Email or Password", success: false });
     }
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1d",
-    });
-    res.status(200).send({ message: "Login Success", success: true,token });
+    const token = jwt.sign(
+      { id: user._id, name: user.username },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "1d",
+      }
+    );
+    res.status(200).send({ message: "Login Success", success: true, token });
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: `Error in Login CTRL ${error.message}` });
+  }
+};
+
+const authController = async (req, res) => {
+  try {
+    const user = await userModel.findById({ _id: req.body.userId });
+    user.password = undefined;
+    if (!user) {
+      return res.status(200).send({
+        message: "user not found",
+        success: false,
+      });
+    } else {
+      res.status(200).send({
+        success: true,
+        data: user,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: "auth error",
+      success: false,
+      error,
+    });
   }
 };
 
@@ -67,7 +98,7 @@ const forgotPassword = async (req, res) => {
     if (!user) {
       return res
         .status(200)
-        .send({ message: "User not found with this email" ,success: false});
+        .send({ message: "User not found with this email", success: false });
     }
 
     //  Generate OTP
@@ -82,10 +113,10 @@ const forgotPassword = async (req, res) => {
     };
 
     sendEmail(mailOptions);
-    res.status(200).json({ message: "OTP sent successfully." , success: true});
+    res.status(200).json({ message: "OTP sent successfully.", success: true });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "An error occurred.",success: false });
+    res.status(500).json({ error: "An error occurred.", success: false });
   }
 };
 
@@ -93,4 +124,5 @@ module.exports = {
   loginController,
   registerController,
   forgotPassword,
+  authController,
 };
