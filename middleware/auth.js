@@ -14,7 +14,6 @@ const authMiddleware = async (req, res, next) => {
       return next(createError.Unauthorized(message));
     }
     req.user = payload;
-    //console.log(req.user);
     next();
   });
 };

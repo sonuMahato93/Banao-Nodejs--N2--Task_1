@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
       "Please fill a valid email address",
     ],
   },
-});
+}, { timestamps: true });
 
 const userModel = mongoose.model("users", userSchema);
 

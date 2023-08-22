@@ -5,11 +5,8 @@ const {
   forgotPassword,
 } = require("../controller/userCtrl");
 const {
-  newPost,
   getAllPost,
-  likePost,
   commentPost,
-  updateAPost,
   deleteAPost,
   createPost,
   updatePost,
